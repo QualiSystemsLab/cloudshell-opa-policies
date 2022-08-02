@@ -38,10 +38,10 @@ deny[reason] {
 # --- validate private s3 bucket ---
 
 deny[reason] {
-	r = tfplan.resource_changes[_]
-	r.mode == "managed"
-	r.type == "aws_s3_bucket"
-	r.change.after.acl != "private"
+    r = tfplan.resource_changes[_]
+    r.mode == "managed"
+    r.type == "aws_s3_bucket"
+    r.change.after.acl != "private"
 
-	reason := "Deployment of not private S3 bucket is not allowed"
+    reason := "Deployment of not private S3 bucket is not allowed"
 }
