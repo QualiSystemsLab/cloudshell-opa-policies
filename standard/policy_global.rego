@@ -31,7 +31,7 @@ deny[reason] {
     region:= get_region(provider_name)
     allowed_regions:=["us-west-2", "eu-west-1"]
     not contains_case_insensitive(allowed_regions, region)
-    reason:= concat("",['Invalid region: "', region, '". The allowed regions are: ', sprintf("%s", allowed_regions)])
+    reason:= concat("",["Invalid region: ", region, ". The allowed regions are: ", sprintf("%s", allowed_regions)])
 }
 
 
