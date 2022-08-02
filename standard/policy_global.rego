@@ -32,7 +32,6 @@ deny[reason] {
     allowed_regions:=["us-west-2", "eu-west-1"]
     not contains_case_insensitive(allowed_regions, region)
     reason:= concat(" ", array.concat([concat("", ["Invalid region: \"", region, "\"."]), "The allowed regions are:"], allowed_regions))
-    reason:= "Invalid region"
 }
 
 
