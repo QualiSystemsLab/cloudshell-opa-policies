@@ -48,15 +48,15 @@ deny[reason] {
 
 import input.driverRequest.actions as cs_apps
 
-forbidden_ports := ["80", "443"]
+forbidden_ports := ["22", "3389"]
 
 deny[reason]{
     request := cs_apps[_]
     model := request.actionParams.deployment.deploymentPath
     attributes := request.actionParams.deployment.attributes[_]
     attributes.attributeName == concat(".", [model, "Public IP Options"])
-    attributes.attributeValue == "Public IP (single subnet)"
-    reason = "Public IP (single subnet) are not allowed"
+    attributes.attributeValue != "No Public IP"
+    reason = "Public IPs are not allowed"
 }
 
 deny[reason]{
@@ -68,3 +68,4 @@ deny[reason]{
     regex.match(ports, attributes.attributeValue)
     reason = concat(" ", ["Opening access to the following ports is not allowed:", concat(", ", forbidden_ports)])
 }
+
