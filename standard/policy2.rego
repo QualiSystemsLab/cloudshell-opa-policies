@@ -46,25 +46,25 @@ deny[reason] {
     reason := "Deployment of not private S3 bucket is not allowed"
 }
 
-import input.items as items
+import input.driverRequest.actions as cs_apps
 
 forbidden_ports := ["80", "443"]
 
 deny[reason]{
-  request := items[_]
-  model := request.appRequestJson.deploymentService.model
-  attributes := request.appRequestJson.deploymentService.attributes[_]
-  attributes.name == concat(".", [model, "Public IP Options"])
-  attributes.value == "Public IP (single subnet)"
-  reason = "Public IP (single subnet) are not allowed"
+    request := cs_apps[_]
+    model := request.actionParams.deployment.deploymentPath
+    attributes := request.actionParams.deployment.attributes[_]
+    attributes.attributeName == concat(".", [model, "Public IP Options"])
+    attributes.attributeValue == "Public IP (single subnet)"
+    reason = "Public IP (single subnet) are not allowed"
 }
 
 deny[reason]{
-  request := items[_]
-  model := request.appRequestJson.deploymentService.model
-  attributes := request.appRequestJson.deploymentService.attributes[_]
-  attributes.name == concat(".", [model, "Inbound Ports"])
-  ports := concat("", ["(^|\\D)(", concat("|", ["80", "443"]), ")(\\D|$)"])
-  regex.match(ports, attributes.value)
-  reason = concat(" ", ["Opening access to the following ports is not allowed:", concat(", ", forbidden_ports)])
+    request := cs_apps[_]
+    model := request.actionParams.deployment.deploymentPath
+    attributes := request.actionParams.deployment.attributes[_]
+    attributes.attributeName == concat(".", [model, "Inbound Ports"])
+    ports := concat("", ["(^|\\D)(", concat("|", forbidden_ports), ")(\\D|$)"])
+    regex.match(ports, attributes.attributeValue)
+    reason = concat(" ", ["Opening access to the following ports is not allowed:", concat(", ", forbidden_ports)])
 }
