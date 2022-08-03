@@ -51,18 +51,20 @@ import input.items as items
 forbidden_ports := ["80", "443"]
 
 deny[reason]{
-    request := items[_]
-    attributes := request.appRequestJson.deploymentService.attributes[_]
-    attributes.name == "Amazon AWS Cloud Provider 2G.Amazon AWS EC2 Instance 2G.Public IP Options"
-    attributes.value == "Public IP (single subnet)"
-    reason = "Public IP (single subnet) are not allowed"
+  request := items[_]
+  model := request.appRequestJson.deploymentService.model
+  attributes := request.appRequestJson.deploymentService.attributes[_]
+  attributes.name == concat(".", [model, "Public IP Options"])
+  attributes.value == "Public IP (single subnet)"
+  reason = "Public IP (single subnet) are not allowed"
 }
 
 deny[reason]{
-    request := items[_]
-    attributes := request.appRequestJson.deploymentService.attributes[_]
-    attributes.name == "Amazon AWS Cloud Provider 2G.Amazon AWS EC2 Instance 2G.Inbound Ports"
-    ports := concat("", ["(^|\\D)(", concat("|", ["80", "443"]), ")(\\D|$)"])
-    regex.match(ports, attributes.value)
-    reason = concat(" ", ["Opening access to the following ports is not allowed:", concat(", ", forbidden_ports)])
+  request := items[_]
+  model := request.appRequestJson.deploymentService.model
+  attributes := request.appRequestJson.deploymentService.attributes[_]
+  attributes.name == concat(".", [model, "Inbound Ports"])
+  ports := concat("", ["(^|\\D)(", concat("|", ["80", "443"]), ")(\\D|$)"])
+  regex.match(ports, attributes.value)
+  reason = concat(" ", ["Opening access to the following ports is not allowed:", concat(", ", forbidden_ports)])
 }
