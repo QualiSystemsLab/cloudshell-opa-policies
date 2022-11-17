@@ -48,7 +48,7 @@ deny[reason] {
 
 import input.driverRequest.actions as cs_apps
 
-forbidden_ports := ["22", "3389"]
+forbidden_ports := ["23", "3389"]
 
 deny[reason]{
     request := cs_apps[_]
